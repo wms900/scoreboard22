@@ -1,56 +1,12 @@
 import React from 'react';
 import './App.css';
-
-const Header = ({title, totalPlayers}) => {
-  return (
-    <header className="header">
-      <h1 className="h1">{title}</h1>
-      <span className="stats">Player: {totalPlayers}</span>
-    </header>
-  )
-}
-
-class Counter extends React.Component { //부모가 갖고 있는 모든 메서드와 속성을 counter가 render를 통해 다 상속받음
-  state = {
-    score: 0,
-    a: 10
-  }
-  constructor() {
-    super();
-    this.handleChangeScore = this.handleChangeScore.bind(this);
-  }
-  handleChangeScore(delta) {
-    console.log('handleChangeScore', this);
-    //state을 변경하는 방법은 setState() 밖에 없다.
-    //this.sate.score += 1;
-    this.setState((prevState) => ({score: prevState.score + delta}));
-  }
+import { Header } from './components/Header';
+import { Player } from './components/Player';
 
 
-  //이벤트의 오른쪽은 함수 선언문이 들어가야 한다.
-  render() {
-    return (
-      <div className="counter">
-        <button className="counter-action decrement" onClick={() => this.handleChangeScore(-1)}> - </button>
-        <span className="counter-score">{this.state.score}</span>
-        <button className="counter-action increment" onClick={() => this.handleChangeScore(1)}> + </button>
-      </div>
-    )
-  }
-}
 
 // function 컴포넌트는 반드시 대문자로 시작
 //react element를 리턴해야 한다.
-
-const Player = (props) => (
-  <div className="player">
-		<span className="player-name">
-			<button className="remove-player" onClick={() => props.removePlayer(props.id)}> x </button>
-      {props.name}
-		</span>
-    <Counter/>
-  </div>
-)
 
 class App extends React.Component {
   state = {
