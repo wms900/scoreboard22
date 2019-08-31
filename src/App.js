@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Header } from './components/Header';
 import { Player } from './components/Player';
+import { AddPlayerForm } from './components/AddPlayerForm';
 
 
 
@@ -11,29 +12,37 @@ import { Player } from './components/Player';
 class App extends React.Component {
   state = {
     players : [
-      {name: 'LDK', id: 1},
-      {name: 'HONG', id: 2},
-      {name: 'KIM', id: 3},
-      {name: 'PARK', id: 4},
+      {name: 'LDK', score:0, id: 1},
+      {name: 'HONG', score:10, id: 2},
+      {name: 'KIM', score:20, id: 3},
+      {name: 'PARK', score:30, id: 4},
     ]
   }
+  maxId = 4;
+
   constructor(){
     super();
     this.handleRemovePlayer = this.handleRemovePlayer.bind(this);
+    this.handleChangeScore = this.handleChangeScore.bind(this);
   }
   render() {
     return (
       <div className="scoreboard">
-        <Header title="My Scoreboard" totalPlayers={11}/>
+        <Header title="My Scoreboard" players={this.state.players}/>
         {/*Player list*/}
         {
           this.state.players.map(player => {
             return (
-              <Player name={player.name} key={player.id}
-                      id={player.id} removePlayer={this.handleRemovePlayer}/>
+              <Player name={player.name} key={player.id} score={player.score}
+                      id={player.id}
+                      changeScore={this.handleChangeScore}
+                      removePlayer={this.handleRemovePlayer}
+              />
             )
           })
         }
+        {/*// 2) 콜백 펑션을 props로 내려주기*/}
+        <AddPlayerForm addPlayer={this.handleAddPlayer}/>
       </div>
     )
   }
@@ -52,6 +61,32 @@ class App extends React.Component {
       const players = prevState.players.filter(player => player.id !== id)
       return {players} //players: players 인데 key 와 value가 같으면 한 쪽을 생략해도 된다.
     })
+  }
+  handleChangeScore(id, delta) {
+    console.log(id, delta);
+    this.setState(prevState => {
+      //id에 해당되는 player를 찾은 다음 score에 delta를 더한다.
+      const players = [...prevState.players ];
+      players.forEach(players => {
+        if(players.id === id) {
+          players.score += delta;
+        }
+      })
+      return {players}
+    })
+  }
+  // 1) 콜백 펑션 정의
+  handleAddPlayer = (name) => {
+    console.log(name);
+    //add player 로직
+
+    this.setState(prevState => {
+      // 원본 배열을 훼손 x. => deep copy
+      const players = [ ...prevState.players ];
+      players.push({name, score: 0, id: ++this.maxId});
+
+      return {players};
+    });
   }
 }
 
